@@ -32,7 +32,16 @@
 ;; Setup use package.
 (dolist (package '(use-package))
   (unless (package-installed-p package)
-     (package-install package)))
+    (package-install package)))
+
+(use-package use-package-ensure-system-package
+  :ensure t)
+
+(use-package auto-package-update
+  :config
+  (setq auto-package-update-delete-old-versions t)
+  (setq auto-package-update-hide-results t)
+  (auto-package-update-maybe))
 
 ;; Install paradox for managing packages.
 (use-package paradox
@@ -40,13 +49,11 @@
   :config
   (paradox-enable))
 
-
 ;; Setup themes.
 (use-package material-theme
   :ensure t
   :config
   (load-theme 'material t))
-
 
 ;; Setup magit.
 (use-package magit
@@ -61,7 +68,6 @@
    magit-save-some-buffers nil
    magit-process-popop-time 10
    magit-diff-refine-hunk t))
-
 
 ;; Setup some customizations.
 (setq-default
@@ -129,7 +135,6 @@
   (global-unset-key [(control z)]))
 
 ;; Remove toolbar, menubar, scrollbar and tooltips
-;;------------------------------------------------
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (tooltip-mode -1)
@@ -140,6 +145,9 @@
 (add-to-list 'default-frame-alist '(height . 40))
 (add-to-list 'default-frame-alist '(font . "Inconsolata-11"))
 
+(use-package rg
+  :ensure t
+  :ensure-system-package rg)
 
 ;; Setup mouse mode.
 (use-package xt-mouse
@@ -278,3 +286,28 @@ region\) apply comment-or-uncomment to the current line"
       (comment-or-uncomment-region (mark) (point)))))
 
 (global-set-key (kbd "C-c C-r") 'comment-or-uncomment-region-or-line)
+
+;; YAML mode is useful.
+(use-package yaml-mode
+  :ensure t
+  :mode "\\.yaml\\'")
+
+;; Configure my python dev environment.
+(use-package elpy
+  :ensure t
+  :defer t
+  :bind (:map elpy-mode-map
+              ("M-." . elpy-goto-definition-or-rgrep))
+  :init
+  (advice-add 'python-mode :before 'elpy-enable)
+  :config
+  (defalias 'workon 'pyvenv-workon)
+  (defun elpy-goto-definition-or-rgrep ()
+    "Go to the definition of the symbol at point, if found. Otherwise, run `elpy-rgrep-symbol'."
+    (interactive)
+    (ring-insert find-tag-marker-ring (point-marker))
+    (condition-case nil (elpy-goto-definition)
+      (error (elpy-rgrep-symbol
+              (concat "\\(def\\|class\\)\s" (thing-at-point 'symbol) "(")))))
+
+  )
