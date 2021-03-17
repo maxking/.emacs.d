@@ -38,6 +38,7 @@
   :ensure t)
 
 (use-package auto-package-update
+  :ensure t
   :config
   (setq auto-package-update-delete-old-versions t)
   (setq auto-package-update-hide-results t)
@@ -67,7 +68,8 @@
   (setq
    magit-save-some-buffers nil
    magit-process-popop-time 10
-   magit-diff-refine-hunk t))
+   magit-diff-refine-hunk t
+   magit-git-executable "/usr/bin/git"))
 
 ;; Setup some customizations.
 (setq-default
@@ -146,8 +148,7 @@
 (add-to-list 'default-frame-alist '(font . "Inconsolata-11"))
 
 (use-package rg
-  :ensure t
-  :ensure-system-package rg)
+  :ensure t)
 
 ;; Setup mouse mode.
 (use-package xt-mouse
