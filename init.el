@@ -82,7 +82,7 @@
  indent-tabs-mode nil
  ;; Add a final newline.
  require-final-newline t
- ;; Resize the 
+ ;; Resize the
  resize-minubuffer-frame t
  column-number-mode t
  blink-matching-paren t
@@ -126,6 +126,12 @@
 (show-paren-mode t)
 ;; Delete seletected text by typing *anything*.
 (delete-selection-mode nil)
+
+;; Don't put backup directory.
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 ;; Setup some useful keybindings.
 (global-set-key
@@ -234,8 +240,8 @@
 (add-hook 'emacs-lisp-mode-hook (lambda () (eldoc-mode t)))
 
 (add-hook 'find-file-hook
-		  (lambda()
-			(highlight-phrase "\\(BUG\\|FIXME\\|TODO\\|NOTE\\):")))
+          (lambda()
+            (highlight-phrase "\\(BUG\\|FIXME\\|TODO\\|NOTE\\):")))
 
 ;; Use ivy mode.
 (use-package ivy
@@ -310,5 +316,100 @@ region\) apply comment-or-uncomment to the current line"
     (condition-case nil (elpy-goto-definition)
       (error (elpy-rgrep-symbol
               (concat "\\(def\\|class\\)\s" (thing-at-point 'symbol) "(")))))
+  (defun company-yasnippet-or-completion ()
+    "Solve company yasnippet conflicts."
+    (interactive)
+    (let ((yas-fallback-behavior
+           (apply 'company-complete-common nil)))
+      (yas-expand)))
 
-  )
+  (add-hook 'company-mode-hook
+            (lambda ()
+              (substitute-key-definition
+               'company-complete-common
+               'company-yasnippet-or-completion
+               company-active-map))))
+
+(use-package whitespace-cleanup-mode
+  :ensure t
+  :hook python-mode)
+
+
+;; Utils to develop Rust.
+(use-package rustic
+  :ensure
+  :bind (:map rustic-mode-map
+              ("M-j" . lsp-ui-imenu)
+              ("M-?" . lsp-find-references)
+              ("C-c C-c l" . flycheck-list-errors)
+              ("C-c C-c a" . lsp-execute-code-action)
+              ("C-c C-c r" . lsp-rename)
+              ("C-c C-c q" . lsp-workspace-restart)
+              ("C-c C-c Q" . lsp-workspace-shutdown)
+              ("C-c C-c s" . lsp-rust-analyzer-status))
+  :config
+  ;; uncomment for less flashiness
+  ;; (setq lsp-eldoc-hook nil)
+  ;; (setq lsp-enable-symbol-highlighting nil)
+  ;; (setq lsp-signature-auto-activate nil)
+
+  ;; comment to disable rustfmt on save
+  (setq rustic-format-on-save t)
+  (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+
+(defun rk/rustic-mode-hook ()
+  ;; so that run C-c C-c C-r works without having to confirm
+  (setq-local buffer-save-without-query t))
+
+(use-package go-mode
+  :ensure
+  :config
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook 'gofmt-before-save nil 't))))
+
+(use-package lsp-mode
+  :ensure
+  :commands lsp
+  :hook go-mode
+  :custom
+  ;; what to use when checking on-save. "check" is default, I prefer clippy
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (lsp-eldoc-render-all t)
+  (lsp-idle-delay 0.6)
+  (lsp-rust-analyzer-server-display-inlay-hints t)
+  :config
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+(use-package lsp-ui
+  :ensure
+  :commands lsp-ui-mode
+  :custom
+  (lsp-ui-peek-always-show t)
+  (lsp-ui-sideline-show-hover t)
+  (lsp-ui-doc-enable nil))
+
+(use-package company
+  :ensure
+  :custom
+  (company-idle-delay 0.5) ;; how long to wait until popup
+  ;; (company-begin-commands nil) ;; uncomment to disable popup
+  :bind
+  (:map company-active-map
+          ("C-n". company-select-next)
+          ("C-p". company-select-previous)
+          ("M-<". company-select-first)
+          ("M->". company-select-last)))
+
+(use-package yasnippet
+  :ensure
+  :config
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook 'yas-minor-mode)
+  (add-hook 'text-mode-hook 'yas-minor-mode)
+  (yas-global-mode 1))
+
+(use-package flycheck
+  :ensure
+  :config
+  (global-flycheck-mode 1))
