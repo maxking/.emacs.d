@@ -59,7 +59,8 @@
 ;; Setup magit.
 (use-package magit
   :ensure t
-  :bind (("s-g" . magit-status))
+  :bind (("s-g" . magit-status)
+         ("C-x g" . magit-status))
   :config
   (use-package hl-todo
     :ensure t
@@ -413,3 +414,13 @@ region\) apply comment-or-uncomment to the current line"
   :ensure
   :config
   (global-flycheck-mode 1))
+
+(use-package exec-path-from-shell
+  :ensure
+  :config
+  (when (daemonp)
+    (exec-path-from-shell-initialize)))
+
+
+(provide 'init)
+;;; init.el ends here.
