@@ -72,6 +72,16 @@
    magit-diff-refine-hunk t
    magit-git-executable "/usr/bin/git"))
 
+;; Use forge to interact with remote hosting site.
+(use-package forge
+  :ensure
+  :after magit
+  :config
+  (setq auth-sources (quote (macos-keychain-internet macos-keychain-generic)))
+  )
+
+
+
 ;; Setup some customizations.
 (setq-default
  ;; Inhibit startup stuff.
@@ -195,6 +205,8 @@
 ;; Setup projectile to handle git and stuff.
 (use-package projectile
   :ensure t
+  :bind (:map projectile-mode-map
+              ("C-c C-f" . projectile-find-file))
   :config
   (setq
    projectile-sort-order 'default
