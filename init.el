@@ -1,62 +1,71 @@
-;; My Basic emacs configuration.
+;; ;;; Commentary
+;; ;;; package init.el -- My Basic Emacs configuration.
 
 
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
+;; ;; Added by Package.el.  This must come before configurations of
+;; ;; installed packages.  Don't delete this line.  If you don't want it,
+;; ;; just comment it out by adding a semicolon to the start of the line.
+;; ;; You may delete these explanatory comments.
+
+;; ;;; Code
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 
-;; Set Personal Information
+;; ;; Set Personal Information
 (setq user-full-name "Abhilash Raj"
-      user-mail-address "maxking@asynchronous.in")
+       user-mail-address "maxking@asynchronous.in")
 
-;; Setup UTF-8.
+;; ;; Setup UTF-8.
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-;; Variables configured via interactive `customize` command
+;; ;; Variables configured via interactive `customize` command
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
 
-;; Setup package management repos.
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+;; ;; Setup package management repos.
+(setq package-archives '(
+                         ("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
                          ("elpy" .  "http://jorgenschaefer.github.io/packages/")))
-(package-initialize)
-(package-refresh-contents)
 
-;; Setup use package.
+
+;; ;; Setup use package.
 (dolist (package '(use-package))
   (unless (package-installed-p package)
+    (package-initialize)
+    (package-refresh-contents)
     (package-install package)))
 
-(use-package use-package-ensure-system-package
-  :ensure t)
+;; (use-package use-package-ensure-system-package
+;;   :ensure t)
 
-(use-package auto-package-update
-  :ensure t
-  :config
-  (setq auto-package-update-delete-old-versions t)
-  (setq auto-package-update-hide-results t)
-  (auto-package-update-maybe))
+;; (use-package auto-package-update
+;;   :ensure t
+;;   :config
+;;   (setq auto-package-update-delete-old-versions t)
+;;   (setq auto-package-update-hide-results t)
+;;   (auto-package-update-maybe))
 
-;; Install paradox for managing packages.
+;; ;; Install paradox for managing packages.
 (use-package paradox
   :ensure t
   :config
   (paradox-enable))
 
-;; Setup themes.
-(use-package material-theme
-  :ensure t
-  :config
-  (load-theme 'material t))
+;; ;; Setup themes.
+;; (use-package material-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'material t))
 
-;; Setup magit.
+
+;; Load the default theme.
+(load-theme 'tsdh-dark t)
+
+;; ;; Setup magit.
 (use-package magit
   :ensure t
   :bind (("s-g" . magit-status)
@@ -72,15 +81,26 @@
    magit-diff-refine-hunk t
    magit-git-executable "/usr/bin/git"))
 
-;; Use forge to interact with remote hosting site.
-(use-package forge
-  :ensure
-  :after magit
-  :config
-  (setq auth-sources (quote (macos-keychain-internet macos-keychain-generic)))
-  )
+;; ;; Use forge to interact with remote hosting site.
+;; (use-package forge
+;;   :ensure
+;;   :after magit
+;;   :config
+;;   (setq auth-sources (quote (macos-keychain-internet macos-keychain-generic)))
+;;   (setq forge-topic-list-limit '(100 . -1))
+;;   )
 
 
+;; ;; (use-package hyperkitty
+;; ;;   :ensure t
+;; ;;   :config
+;; ;;   (
+;; ;;    setq hyperkitty-mlists
+;; ;;         (list
+;; ;;          (cons "mailman-users@mailman3.org" "https://lists.mailman3.org/archives"))))
+
+;; ;; (use-package kubernetes
+;; ;;   :ensure t)
 
 ;; Setup some customizations.
 (setq-default
@@ -115,7 +135,7 @@
  ;; Browser setup.
  browse-url-borwser-function 'browse-url-generic
  browse-url-generic-program "firefox"
- )
+)
 
 (setq
  ;; Set backup to a sinle path.
@@ -132,11 +152,11 @@
 ;; electric pair mode.
 (electric-pair-mode 1)
 ;; line number.
-(global-linum-mode 1)
+;; (global-linum-mode 1)
 ;; Show paerns.
 (show-paren-mode t)
 ;; Delete seletected text by typing *anything*.
-(delete-selection-mode nil)
+;; (delete-selection-mode nil)
 
 ;; Don't put backup directory.
 (setq backup-directory-alist
@@ -144,7 +164,7 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-;; Setup some useful keybindings.
+;; ;; Setup some useful keybindings.
 (global-set-key
  (kbd "C-<return>") 'other-window)
 (define-key global-map [?\s-i] 'find-user-init-file)
@@ -157,12 +177,12 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (tooltip-mode -1)
-(set-scroll-bar-mode 'nil)
+;; (set-scroll-bar-mode 'nil)
 
-;; Display settings
-(add-to-list 'default-frame-alist '(width  . 89))
-(add-to-list 'default-frame-alist '(height . 40))
-(add-to-list 'default-frame-alist '(font . "Inconsolata-11"))
+;; ;; Display settings
+;; ;; (add-to-list 'default-frame-alist '(width  . 89))
+;; ;; (add-to-list 'default-frame-alist '(height . 40))
+;; ;; (add-to-list 'default-frame-alist '(font . "Inconsolata-1"))
 
 (use-package rg
   :ensure t)
@@ -175,7 +195,7 @@
   :config
   (xterm-mouse-mode t))
 
-(defun track-mouse (e))
+;; (defun track-mouse (e))
 
 ;; Recent files.
 (recentf-mode 1)
@@ -214,19 +234,19 @@
    projectile-completion-system 'ivy)
   (add-hook 'prog-mode-hook 'projectile-mode))
 
-;; Some useful functions.
+;;; Some useful functions.
 (defun untabify-buffer ()
   (interactive)
   (untabify (point-min) (point-max)))
 
-;; Setup some useful keybindings and workflows.
-;; https://github.com/bbatsov/crux
-(use-package crux
-  :ensure t
-  :bind ([remap move-beginning-of-line] . crux-move-beginning-of-line))
+;; ;; Setup some useful keybindings and workflows.
+;; ;; https://github.com/bbatsov/crux
+;; (use-package crux
+;;   :ensure t
+;;   :bind ([remap move-beginning-of-line] . crux-move-beginning-of-line))
 
-;; Utilities to indent region.
-;; Use > to indent right region and < to indent region left.
+;; ;; Utilities to indent region.
+;; ;; Use > to indent right region and < to indent region left.
 (defun my-indent-region (N)
   (interactive "p")
   (if (use-region-p)
@@ -244,13 +264,13 @@
 (global-set-key ">" 'my-indent-region)
 (global-set-key "<" 'my-unindent-region)
 
-;; Unfill package has a reverse of fill-paragraph mode.
+;; ;; Unfill package has a reverse of fill-paragraph mode.
 (use-package unfill
   :ensure t
   :bind ([remap fill-paragraph] . unfill-toggle))
 
-;; Enable eldoc mode for elisp.
-(add-hook 'emacs-lisp-mode-hook (lambda () (eldoc-mode t)))
+;; ;; Enable eldoc mode for elisp.
+;; (add-hook 'emacs-lisp-mode-hook (lambda () (eldoc-mode t)))
 
 (add-hook 'find-file-hook
           (lambda()
@@ -312,127 +332,134 @@ region\) apply comment-or-uncomment to the current line"
   :ensure t
   :mode "\\.yaml\\'")
 
-;; Configure my python dev environment.
-(use-package elpy
-  :ensure t
-  :defer t
-  :bind (:map elpy-mode-map
-              ("M-." . elpy-goto-definition-or-rgrep))
-  :init
-  (advice-add 'python-mode :before 'elpy-enable)
-  :config
-  (defalias 'workon 'pyvenv-workon)
-  (defun elpy-goto-definition-or-rgrep ()
-    "Go to the definition of the symbol at point, if found. Otherwise, run `elpy-rgrep-symbol'."
-    (interactive)
-    (ring-insert find-tag-marker-ring (point-marker))
-    (condition-case nil (elpy-goto-definition)
-      (error (elpy-rgrep-symbol
-              (concat "\\(def\\|class\\)\s" (thing-at-point 'symbol) "(")))))
-  (defun company-yasnippet-or-completion ()
-    "Solve company yasnippet conflicts."
-    (interactive)
-    (let ((yas-fallback-behavior
-           (apply 'company-complete-common nil)))
-      (yas-expand)))
+;; ;; Configure my python dev environment.
+;; ;; (use-package elpy
+;; ;;   :ensure t
+;; ;;   :defer t
+;; ;;   :bind (:map elpy-mode-map
+;; ;;               ("M-." . elpy-goto-definition-or-rgrep))
+;; ;;   :init
+;; ;;   (advice-add 'python-mode :before 'elpy-enable)
+;; ;;   :config
+;; ;;   (defalias 'workon 'pyvenv-workon)
+;; ;;   (defun elpy-goto-definition-or-rgrep ()
+;; ;;     "Go to the definition of the symbol at point, if found. Otherwise, run `elpy-rgrep-symbol'."
+;; ;;     (interactive)
+;; ;;     (ring-insert find-tag-marker-ring (point-marker))
+;; ;;     (condition-case nil (elpy-goto-definition)
+;; ;;       (error (elpy-rgrep-symbol
+;; ;;               (concat "\\(def\\|class\\)\s" (thing-at-point 'symbol) "(")))))
+;; ;;   (defun company-yasnippet-or-completion ()
+;; ;;     "Solve company yasnippet conflicts."
+;; ;;     (interactive)
+;; ;;     (let ((yas-fallback-behavior
+;; ;;            (apply 'company-complete-common nil)))
+;; ;;       (yas-expand)))
 
-  (add-hook 'company-mode-hook
-            (lambda ()
-              (substitute-key-definition
-               'company-complete-common
-               'company-yasnippet-or-completion
-               company-active-map))))
+;; ;;   (add-hook 'company-mode-hook
+;; ;;             (lambda ()
+;; ;;               (substitute-key-definition
+;; ;;                'company-complete-common
+;; ;;                'company-yasnippet-or-completion
+;; ;;                company-active-map))))
 
-(use-package whitespace-cleanup-mode
-  :ensure t
-  :hook python-mode)
-
-
-;; Utils to develop Rust.
-(use-package rustic
-  :ensure
-  :bind (:map rustic-mode-map
-              ("M-j" . lsp-ui-imenu)
-              ("M-?" . lsp-find-references)
-              ("C-c C-c l" . flycheck-list-errors)
-              ("C-c C-c a" . lsp-execute-code-action)
-              ("C-c C-c r" . lsp-rename)
-              ("C-c C-c q" . lsp-workspace-restart)
-              ("C-c C-c Q" . lsp-workspace-shutdown)
-              ("C-c C-c s" . lsp-rust-analyzer-status))
-  :config
-  ;; uncomment for less flashiness
-  ;; (setq lsp-eldoc-hook nil)
-  ;; (setq lsp-enable-symbol-highlighting nil)
-  ;; (setq lsp-signature-auto-activate nil)
-
-  ;; comment to disable rustfmt on save
-  (setq rustic-format-on-save t)
-  (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
-
-(defun rk/rustic-mode-hook ()
-  ;; so that run C-c C-c C-r works without having to confirm
-  (setq-local buffer-save-without-query t))
-
-(use-package go-mode
-  :ensure
-  :config
-  (add-hook 'go-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook 'gofmt-before-save nil 't))))
-
-(use-package lsp-mode
-  :ensure
-  :commands lsp
-  :hook go-mode
-  :custom
-  ;; what to use when checking on-save. "check" is default, I prefer clippy
-  (lsp-rust-analyzer-cargo-watch-command "clippy")
-  (lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.6)
-  (lsp-rust-analyzer-server-display-inlay-hints t)
-  :config
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
-
-(use-package lsp-ui
-  :ensure
-  :commands lsp-ui-mode
-  :custom
-  (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-show-hover t)
-  (lsp-ui-doc-enable nil))
-
-(use-package company
-  :ensure
-  :custom
-  (company-idle-delay 0.5) ;; how long to wait until popup
-  ;; (company-begin-commands nil) ;; uncomment to disable popup
-  :bind
-  (:map company-active-map
-          ("C-n". company-select-next)
-          ("C-p". company-select-previous)
-          ("M-<". company-select-first)
-          ("M->". company-select-last)))
-
-(use-package yasnippet
-  :ensure
-  :config
-  (yas-reload-all)
-  (add-hook 'prog-mode-hook 'yas-minor-mode)
-  (add-hook 'text-mode-hook 'yas-minor-mode)
-  (yas-global-mode 1))
-
-(use-package flycheck
-  :ensure
-  :config
-  (global-flycheck-mode 1))
-
-(use-package exec-path-from-shell
-  :ensure
-  :config
-  (when (daemonp)
-    (exec-path-from-shell-initialize)))
+;; (use-package whitespace-cleanup-mode
+;;   :ensure t
+;;   :hook python-mode)
 
 
-(provide 'init)
-;;; init.el ends here.
+;; ;; Utils to develop Rust.
+;; (use-package rustic
+;;   :ensure
+;;   :bind (:map rustic-mode-map
+;;               ("M-j" . lsp-ui-imenu)
+;;               ("M-?" . lsp-find-references)
+;;               ("C-c C-c l" . flycheck-list-errors)
+;;               ("C-c C-c a" . lsp-execute-code-action)
+;;               ("C-c C-c r" . lsp-rename)
+;;               ("C-c C-c q" . lsp-workspace-restart)
+;;               ("C-c C-c Q" . lsp-workspace-shutdown)
+;;               ("C-c C-c s" . lsp-rust-analyzer-status))
+;;   :config
+;;   ;; uncomment for less flashiness
+;;   ;; (setq lsp-eldoc-hook nil)
+;;   ;; (setq lsp-enable-symbol-highlighting nil)
+;;   ;; (setq lsp-signature-auto-activate nil)
+
+;;   ;; comment to disable rustfmt on save
+;;   (setq rustic-format-on-save t)
+;;   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+
+;; (defun rk/rustic-mode-hook ()
+;;   ;; so that run C-c C-c C-r works without having to confirm
+;;   (setq-local buffer-save-without-query t))
+
+;; (use-package go-mode
+;;   :ensure
+;;   :config
+;;   (add-hook 'go-mode-hook
+;;             (lambda ()
+;;               (add-hook 'before-save-hook 'gofmt-before-save nil 't))))
+
+;; (use-package lsp-mode
+;;   :ensure
+;;   :commands lsp
+;;   :hook go-mode
+;;   :custom
+;;   ;; what to use when checking on-save. "check" is default, I prefer clippy
+;;   (lsp-rust-analyzer-cargo-watch-command "clippy")
+;;   (lsp-eldoc-render-all t)
+;;   (lsp-idle-delay 0.6)
+;;   (lsp-rust-analyzer-server-display-inlay-hints t)
+;;   :config
+;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+;; (use-package lsp-ui
+;;   :ensure
+;;   :commands lsp-ui-mode
+;;   :custom
+;;   (lsp-ui-peek-always-show t)
+;;   (lsp-ui-sideline-show-hover t)
+;;   (lsp-ui-doc-enable nil))
+
+;; (use-package company
+;;   :ensure
+;;   :custom
+;;   (company-idle-delay 0.5) ;; how long to wait until popup
+;;   ;; (company-begin-commands nil) ;; uncomment to disable popup
+;;   :bind
+;;   (:map company-active-map
+;;           ("C-n". company-select-next)
+;;           ("C-p". company-select-previous)
+;;           ("M-<". company-select-first)
+;;           ("M->". company-select-last)))
+
+;; (use-package yasnippet
+;;   :ensure
+;;   :config
+;;   (yas-reload-all)
+;;   (add-hook 'prog-mode-hook 'yas-minor-mode)
+;;   (add-hook 'text-mode-hook 'yas-minor-mode)
+;;   (yas-global-mode 1))
+
+;; (use-package flycheck
+;;   :ensure
+;;   :config
+;;   (global-flycheck-mode 1))
+
+;; (use-package exec-path-from-shell
+;;   :ensure
+;;   :config
+;;   (when (daemonp)
+;;     (exec-path-from-shell-initialize)))
+
+;; (use-package dumb-jump
+;;   :ensure
+;;   :init
+;;   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+
+
+;; (setq-default mac-command-modifier 'alt mac-option-modifier 'meta)
+
+;; (provide 'init)
+;; ;;; init.el ends here
