@@ -63,7 +63,13 @@
 
 
 ;; Load the default theme.
-(load-theme 'tsdh-dark t)
+
+(use-package zenburn-theme
+  :ensure t
+  :config
+  (load-theme 'zenburn t))
+
+;; (load-theme 'tsdh-dark t)
 
 ;; ;; Setup magit.
 (use-package magit
