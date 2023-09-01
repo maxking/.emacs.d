@@ -10,5 +10,5 @@ To install this configuration, you can run:
 
 ```
 $ cd
-$ git clone https://github.com/maxking/.emacs.d
+$ git clone https://github.com/maxking/.emacs.d ~/.emacs.d
 ```

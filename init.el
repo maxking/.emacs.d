@@ -183,12 +183,11 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (tooltip-mode -1)
-;; (set-scroll-bar-mode 'nil)
 
 ;; ;; Display settings
 ;; ;; (add-to-list 'default-frame-alist '(width  . 89))
 ;; ;; (add-to-list 'default-frame-alist '(height . 40))
-;; ;; (add-to-list 'default-frame-alist '(font . "Inconsolata-1"))
+(add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
 
 (use-package rg
   :ensure t)
