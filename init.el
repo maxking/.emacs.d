@@ -187,7 +187,8 @@
 ;; ;; Display settings
 ;; ;; (add-to-list 'default-frame-alist '(width  . 89))
 ;; ;; (add-to-list 'default-frame-alist '(height . 40))
-(add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
+(add-to-list 'default-frame-alist '(font . "Inconsolata-15"))
+(set-frame-font "Inconsolata 16" nil t)
 
 (use-package rg
   :ensure t)
